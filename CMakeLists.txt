@@ -1,11 +1,3 @@
-cmake_minimum_required(VERSION 3.7)
-
-if(${CMAKE_VERSION} VERSION_LESS 3.29)
-    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-else()
-    cmake_policy(VERSION 3.29)
-endif()
-
 set(LIBRARY_NAME foo)
 
 set(LIBRARY_VERSION 1.0.0)
@@ -21,8 +13,12 @@ include_directories(
 
 add_library(${LIBRARY_NAME} ${SOURCES})
 
-set_target_properties(${LIBRARY_NAME} PROPERTIES
-  VERSION ${LIBRARY_VERSION}
-  SOVERSION ${LIBRARY_VERSION}
-  OUTPUT_NAME ${LIBRARY_NAME}
+target_include_directories(${LIBRARY_NAME}
+    PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
+
+install(DIRECTORY include/ DESTINATION include)
